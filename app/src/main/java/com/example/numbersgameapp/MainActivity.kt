@@ -23,9 +23,9 @@ class MainActivity : AppCompatActivity() {
     lateinit var myLayout : ConstraintLayout
     lateinit var myRv : RecyclerView
 
-    val guessList = arrayListOf<String>()
-    val leftList = arrayListOf<String>()
-
+    var guessList = arrayListOf<String>()
+    var leftList = arrayListOf<String>()
+    var left = 5
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +37,6 @@ class MainActivity : AppCompatActivity() {
         myRv = findViewById(R.id.recyclerView)
 
         val random = Random.nextInt(11)
-        var left = 5
 
         button.setOnClickListener {
 
@@ -69,11 +68,33 @@ class MainActivity : AppCompatActivity() {
                 }
             } else {
                 endAlert()
+                //return variable to defualt
+                guessList.clear()
+                leftList.clear()
+                left=5
             }
             editText.text.clear()
         }
 
 
+    }
+
+    //rotate device
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putStringArrayList("guessList", guessList)
+        outState.putStringArrayList("leftList", leftList)
+        outState.putInt("left", left)
+    }
+
+    //rotate device
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        guessList = savedInstanceState.getStringArrayList("guessList")!!
+        leftList = savedInstanceState.getStringArrayList("leftList")!!
+        left = savedInstanceState.getInt("left")
+        myRv.adapter = RecyclerViewAdapter(guessList,leftList)
+        myRv.layoutManager = LinearLayoutManager(this)
     }
 
     private fun endAlert(){
